@@ -1,0 +1,34 @@
+web.xml 的加载顺序是：context-param -> listener -> filter -> interceptor->servlet，所以SSH先struts再spring然后hibernate
+
+servlet的filter（过滤器），spring的interceptor（拦截器）
+
+
+
+拦截器与过滤器的区别：
+拦截器是基于java的反射机制的，而过滤器是基于函数回调。
+拦截器不依赖与servlet容器，过滤器依赖与servlet容器。
+拦截器只能对action请求起作用，而过滤器则可以对几乎所有的请求起作用。
+拦截器可以访问action上下文、值栈里的对象，而过滤器不能访问。
+在action的生命周期中，拦截器可以多次被调用，而过滤器只能在容器初始化时被调用一次
+
+filter和拦截器的区别和执行顺序：
+1.Filter过滤器只过滤jsp文件不过滤action请求解决方案
+解决办法：在web.xml中将filter的配置放在struts2配置的前面。
+2.拦截器与Filter的区别 
+Spring的拦截器与Servlet的Filter有相似之处，比如二者都是AOP编程思想的体现，都能实现权限检查、日志记录等。不同的是：
+使用范围不同：Filter是Servlet规范规定的，只能用于Web程序中。而拦截器既可以用于Web程序，也可以用于Application、Swing程序中。
+规范不同：Filter是在Servlet规范中定义的，是Servlet容器支持的。而拦截器是在Spring容器内的，是Spring框架支持的。
+使用的资源不同：同其他的代码块一样，拦截器也是一个Spring的组件，归Spring管理，配置在Spring文件中，因此能使用Spring里的任何资源、对象，例如Service对象、数据源、事务管理等，通过IoC注入到拦截器即可；而Filter则不能。
+深度不同：Filter在只在Servlet前后起作用。而拦截器能够深入到方法前后、异常抛出前后等，因此拦截器的使用具有更大的弹性。所以在Spring构架的程序中，要优先使用拦截器。
+实际上Filter和Servlet极其相似，区别只是Filter不能直接对用户生成响应。实际上Filter里doFilter()方法里的代码就是从多个Servlet的service()方法里抽取的通用代码，通过使用Filter可以实现更好的复用。
+filter是一个可以复用的代码片段，可以用来转换HTTP请求、响应和头信息。Filter不像Servlet，它不能产生一个请求或者响 应，它只是修改对某一资源的请求，或者修改从某一的响应。
+JSR中说明的是，按照多个匹配的Filter，是按照其在web.xml中配置的顺序 来执行的。 
+所以这也就是，把自己的Filter或者其他的Filter（比如UrlRewrite的Filter）放在Struts的 DispatcherFilter的前面的原因。因为，它们需要在请求被Struts2框架处理之前，做一些前置的工作。 
+当Filter被调用，并且进入了Struts2的DispatcherFilter中 后，Struts2会按照在Action中配置的Interceptor Stack中的Interceptor的顺序，来调用Interceptor。
+
+
+执行顺序：过滤前 – 拦截前 – Action处理 – 拦截后 – 过滤后。个人认为过滤是一个横向的过程，首先把客户端提交的内容进行过滤(例如未登录用户不能访问内部页面的处理)；过滤通过后，拦截器将检查用户提交数据的验证，做一些前期的数据处理，接着把处理后的数据发给对应的Action；Action处理完成返回后，拦截器还可以做其他过程(还没想到要做啥)，再向上返回到过滤器的后续操作。
+
+
+
+基于XML的applicationContext.xml中对dao，action等bean的scope设置，有状态的bean(有成员变量的bean)都使用Prototype作用域，而对无状态的bean（无成员变量的bean）则应该使用singleton作用域
