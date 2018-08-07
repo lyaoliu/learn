@@ -2,7 +2,7 @@ web.xml 的加载顺序是：context-param -> listener -> filter -> interceptor->servle
 
 servlet的filter（过滤器），spring的interceptor（拦截器）
 
-
+22221222
 
 拦截器与过滤器的区别：
 拦截器是基于java的反射机制的，而过滤器是基于函数回调。
