@@ -1,0 +1,9 @@
+delete from dld_config where code like 'sms%';
+insert into dld_config values('sms_url','http://221.237.182.5:8088/Service.asmx?WSDL','市级平台短信发送接口地址');
+insert into dld_config values('sms_url_username','07','市级平台短信账户名id');
+insert into dld_config values('sms_url_pwd','6LDZ6g7raf','市级平台短信账号密码');
+insert into dld_config values('sms_url_name','sms_url_city','市级平台短信接口');
+insert into dld_config values('sms_url_identify','city1234','市级平台短信短信唯一标识');
+insert into dld_config values('sms_url_method','sendMessage','市级平台短信调用方法');
+insert into dld_config values('sms_url_sign','【大联动·微治理】','市级平台短信签名');
+commit;
